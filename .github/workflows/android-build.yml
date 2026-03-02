@@ -19,24 +19,22 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Install Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
       - name: Accept Licenses
         run: yes | sdkmanager --licenses
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Grant Permission
-        run: chmod +x gradlew
-
-      - name: Build APK
+      - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
